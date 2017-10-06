@@ -9,8 +9,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
@@ -20,12 +24,18 @@ public class Titulo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
+	@NotEmpty (message = "Descrição é obrigatória")
+	@Size(max = 60, message = "Descrição não pode ter mais que 60 caracteres")
 	private String descricao;
 
+	@NotNull(message = "Data é obrigatória")
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date dataVencimento;
 	
-	@NotNull
+	@NotNull(message = "Valor é obrigatório")
+	@DecimalMin(value = "0.01", message = "Valor não pode ser menor que 0,01")
+	@DecimalMax(value = "9999999.99", message = "Valor não pode ser maior que 9.999.000,00") 
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal valor;
 

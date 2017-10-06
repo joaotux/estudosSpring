@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Implementation-Title: cobranca
 Implementation-Version: 0.0.1-SNAPSHOT
-Built-By: jrafa
+Built-By: joaotux
 Implementation-Vendor-Id: com.originmobi
 Build-Jdk: 1.8.0_121
 Implementation-URL: http://projects.spring.io/spring-boot/cobranca/

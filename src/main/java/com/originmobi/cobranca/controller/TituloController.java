@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -13,12 +11,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.originmobi.cobranca.model.StatusTitulo;
 import com.originmobi.cobranca.model.Titulo;
 import com.originmobi.cobranca.repository.Titulos;
+import com.originmobi.cobranca.service.CadastroTituloService;
 
 @Controller
 @RequestMapping("/titulo")
@@ -28,6 +28,9 @@ public class TituloController {
 
 	@Autowired
 	private Titulos titulos;
+
+	@Autowired
+	private CadastroTituloService tituloService;
 
 	@RequestMapping("/novo")
 	public ModelAndView novo() {
@@ -42,12 +45,12 @@ public class TituloController {
 		if (errors.hasErrors())
 			return CADASTRO_TITULO;
 
-		try {			
-			titulos.save(titulo);
+		try {
+			tituloService.salvar(titulo);
 			attributes.addFlashAttribute("mensagem", "Título salvo com sucesso!");
 			return "redirect:/titulo/novo";
-		} catch (DataIntegrityViolationException e) {
-			errors.rejectValue("dataVencimento", null, "Formato de data inválido!");
+		} catch (IllegalArgumentException e) {
+			errors.rejectValue("dataVencimento", null, e.getMessage());
 			return CADASTRO_TITULO;
 		}
 	}
@@ -72,10 +75,16 @@ public class TituloController {
 
 	@RequestMapping(value = "{id}", method = RequestMethod.DELETE)
 	public String excluir(@PathVariable Long id, RedirectAttributes attributes) {
-		titulos.delete(id);
-		
+		tituloService.delete(id);
+
 		attributes.addFlashAttribute("mensagem", "Titulo excluido com sucesso!");
 		return "redirect:/titulo";
+	}
+
+	// função que responde a requisição ajax
+	@RequestMapping(value = "/{codigo}/receber", method = RequestMethod.PUT)
+	public @ResponseBody String receber(@PathVariable Long codigo) {
+		return tituloService.receber(codigo);
 	}
 
 	// retorna uma lista com os StatusTitulos.

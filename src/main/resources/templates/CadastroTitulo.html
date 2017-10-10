@@ -47,9 +47,9 @@
 			</div>
 			<div class="form-group">
 				<label for="status" class="col-sm-2 control-label">Status</label> <select
-					class="form-control" name="status">
+					class="form-control" name="status" >
 					<option th:each="status : ${todosStatosTitulos}"
-						th:value="${status}" th:text="${status.descricao}"></option>
+						th:value="${status}" th:text="${status.descricao}" th:field="*{status}"></option>
 				</select>
 			</div>
 			<div class="form-group">
